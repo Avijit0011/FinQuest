@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: finquest_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: finquest
+      POSTGRES_PASSWORD: finquest_password
+      POSTGRES_DB: finquest_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: finquest_redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    container_name: finquest_backend
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://finquest:finquest_password@postgres:5432/finquest_db
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: super-secret-finquest-jwt-key-2026
+      JWT_REFRESH_SECRET: super-secret-finquest-refresh-key-2026
+      AI_PROVIDER: fallback
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    container_name: finquest_frontend
+    restart: always
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
