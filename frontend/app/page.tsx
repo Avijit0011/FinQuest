@@ -2,33 +2,21 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import {
-  Trophy,
-  Flame,
-  Bot,
-  PieChart,
-  ShieldCheck,
-  Target,
-  ArrowRight,
-  CheckCircle2,
-  Sparkles,
-  Award
-} from 'lucide-react';
 
 export default function LandingPage() {
   const [showTOS, setShowTOS] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-indigo-500 selection:text-white">
-      {/* Header Navigation */}
-      <nav className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+      {/* Top Header */}
+      <nav className="border-b border-slate-800 bg-slate-950 px-6 py-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center font-black text-xl text-white shadow-lg">
+            <div className="w-8 h-8 rounded bg-blue-600 flex items-center justify-center font-bold text-white text-lg">
               Q
             </div>
-            <span className="font-extrabold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-violet-400">
+            <span className="font-bold text-xl tracking-tight text-white">
               FinQuest
             </span>
           </div>
@@ -36,13 +24,13 @@ export default function LandingPage() {
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard"
-              className="text-sm font-semibold text-slate-300 hover:text-white transition-colors"
+              className="text-xs font-semibold text-slate-300 hover:text-white transition-colors"
             >
               Sign In
             </Link>
             <Link
               href="/dashboard"
-              className="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 transition-all shadow-md shadow-indigo-600/30"
+              className="px-4 py-2 rounded-md text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
             >
               Start Your Quest
             </Link>
@@ -51,210 +39,202 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative px-6 pt-16 pb-24 max-w-7xl mx-auto text-center space-y-8 overflow-hidden">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-950/80 border border-indigo-800 text-indigo-300 text-xs font-semibold">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Next-Gen Gamified Personal Finance</span>
+      <section className="px-6 pt-16 pb-20 max-w-6xl mx-auto text-center space-y-6">
+        <div className="inline-block px-3 py-1 rounded bg-slate-900 border border-slate-800 text-slate-400 text-xs font-semibold">
+          Gamified Personal Finance Platform
         </div>
 
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white max-w-4xl mx-auto leading-tight">
-          Turn Your Money Habits Into a <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-amber-400">Game.</span>
+        <h1 className="text-3xl sm:text-5xl font-extrabold text-white max-w-3xl mx-auto leading-tight tracking-tight">
+          Turn Your Money Habits Into a Game.
         </h1>
 
-        <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto font-normal leading-relaxed">
-          FinQuest combines smart expense tracking, savings goals, AI-driven coaching, and RPG level progression to make responsible finance engaging, clear, and rewarding.
+        <p className="text-base text-slate-400 max-w-2xl mx-auto font-normal leading-relaxed">
+          FinQuest combines smart expense tracking, savings goals, AI-driven coaching, and RPG level progression to make responsible personal finance clear and structured.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
           <Link
             href="/dashboard"
-            className="w-full sm:w-auto px-8 py-4 rounded-xl text-base font-bold text-white bg-indigo-600 hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-600/30 flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-6 py-3 rounded-md text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
           >
-            <span>Start Your Quest</span>
-            <ArrowRight className="w-5 h-5" />
+            Start Your Quest
           </Link>
           <a
             href="#features"
-            className="w-full sm:w-auto px-8 py-4 rounded-xl text-base font-bold text-slate-300 hover:text-white bg-slate-900 border border-slate-800 hover:border-slate-700 transition-all"
+            className="w-full sm:w-auto px-6 py-3 rounded-md text-sm font-semibold text-slate-300 bg-slate-900 border border-slate-800 hover:bg-slate-800 transition-colors"
           >
-            Explore Features
+            Explore System Architecture
           </a>
         </div>
 
-        {/* Dashboard Preview Card */}
-        <div className="mt-12 p-3 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-2xl max-w-5xl mx-auto text-left">
-          <div className="flex items-center gap-2 px-3 py-2 border-b border-slate-800 text-xs text-slate-500">
-            <div className="w-3 h-3 rounded-full bg-rose-500/80" />
-            <div className="w-3 h-3 rounded-full bg-amber-500/80" />
-            <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
-            <span className="ml-2 font-mono text-[11px]">app.finquest.com/dashboard</span>
+        {/* Real Product Demo Data Preview */}
+        <div className="mt-12 p-6 rounded-lg bg-slate-900 border border-slate-800 max-w-4xl mx-auto text-left space-y-4">
+          <div className="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800 pb-3">
+            <span className="font-bold text-white">System Demo Preview</span>
+            <span>Level 12 • 2,450 / 3,000 XP • 14-Day Streak</span>
           </div>
 
-          <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="fin-card p-4 bg-slate-950/60 border-slate-800">
-              <div className="text-xs font-semibold text-slate-400">Total Net Savings</div>
-              <div className="text-2xl font-black text-emerald-400 mt-1">₹68,500</div>
-              <div className="text-[11px] text-slate-500 mt-1">+18% compared to last month</div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div className="p-4 rounded bg-slate-950 border border-slate-800">
+              <span className="text-slate-400">Total Net Worth</span>
+              <p className="text-xl font-bold text-white mt-1">₹2,48,500</p>
+              <span className="text-blue-400 text-[11px] mt-1 inline-block">+12.4% this month</span>
             </div>
 
-            <div className="fin-card p-4 bg-slate-950/60 border-slate-800">
-              <div className="flex justify-between items-center text-xs font-semibold">
-                <span className="text-slate-400">Current Level</span>
-                <span className="text-amber-400 font-bold">2,450 / 3,000 XP</span>
-              </div>
-              <div className="text-2xl font-black text-amber-400 mt-1 flex items-center gap-2">
-                Level 12
-              </div>
-              <div className="w-full bg-slate-800 h-2 rounded-full mt-2 overflow-hidden">
-                <div className="bg-amber-400 h-full w-[80%]" />
-              </div>
+            <div className="p-4 rounded bg-slate-950 border border-slate-800">
+              <span className="text-slate-400">Financial Health Index</span>
+              <p className="text-xl font-bold text-blue-400 mt-1">78 / 100</p>
+              <span className="text-slate-500 text-[11px] mt-1 inline-block">Deterministic Factor Rating</span>
             </div>
 
-            <div className="fin-card p-4 bg-slate-950/60 border-slate-800">
-              <div className="flex items-center justify-between text-xs font-semibold">
-                <span className="text-slate-400">Streak Active</span>
-                <Flame className="w-4 h-4 text-amber-500 fill-amber-500" />
-              </div>
-              <div className="text-2xl font-black text-amber-500 mt-1">🔥 14 Days</div>
-              <div className="text-[11px] text-slate-500 mt-1">XP multiplier 1.2x enabled</div>
+            <div className="p-4 rounded bg-slate-950 border border-slate-800">
+              <span className="text-slate-400">Active Quest</span>
+              <p className="text-sm font-bold text-white mt-1">7-Day Budget Challenge</p>
+              <span className="text-slate-400 text-[11px] mt-1 inline-block">4 / 7 Days Completed (+250 XP)</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Grid */}
-      <section id="features" className="py-20 px-6 max-w-7xl mx-auto w-full border-t border-slate-800">
-        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-          <h2 className="text-3xl font-extrabold text-white">Engineered for Financial Mastery</h2>
-          <p className="text-slate-400 text-base">Comprehensive tools that feel like a polished modern SaaS product.</p>
+      {/* 2-Column Product Capabilities */}
+      <section id="features" className="py-16 px-6 max-w-6xl mx-auto w-full border-t border-slate-900">
+        <div className="text-left mb-12">
+          <h2 className="text-2xl font-bold text-white">Core System Features</h2>
+          <p className="text-slate-400 text-sm mt-1">Engineered for habit formation and automated transaction analysis.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="fin-card p-6 bg-slate-900/60 border-slate-800 hover:border-indigo-500/50">
-            <div className="w-12 h-12 rounded-xl bg-indigo-950 text-indigo-400 flex items-center justify-center mb-4">
-              <Sparkles className="w-6 h-6" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">Smart Expense Tracking</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">
-              Instant AI auto-categorization parses prompts like "Swiggy 450" into structured categories with zero manual hassle.
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+          <div className="p-6 rounded-lg bg-slate-900 border border-slate-800 space-y-2">
+            <h3 className="font-bold text-base text-white">Smart Expense Categorization</h3>
+            <p className="text-slate-400 leading-relaxed">
+              Input entries naturally like "Swiggy 450" or "Uber 250". The system proposes category, amount, and type for confirmation.
             </p>
           </div>
 
-          <div className="fin-card p-6 bg-slate-900/60 border-slate-800 hover:border-indigo-500/50">
-            <div className="w-12 h-12 rounded-xl bg-violet-950 text-violet-400 flex items-center justify-center mb-4">
-              <Bot className="w-6 h-6" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">AI Financial Coach</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">
-              Conversational intelligence anchored in your verified database metrics to answer questions and optimize budgets.
+          <div className="p-6 rounded-lg bg-slate-900 border border-slate-800 space-y-2">
+            <h3 className="font-bold text-white text-base">Conversational AI Financial Coach</h3>
+            <p className="text-slate-400 leading-relaxed">
+              Query spending trends and receive advice grounded strictly in your verified database metrics with user isolation.
             </p>
           </div>
 
-          <div className="fin-card p-6 bg-slate-900/60 border-slate-800 hover:border-indigo-500/50">
-            <div className="w-12 h-12 rounded-xl bg-amber-950 text-amber-400 flex items-center justify-center mb-4">
-              <Trophy className="w-6 h-6" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">Gamified Challenges</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">
-              Join 7-day budget targets, savings sprints, and custom AI challenges to earn XP, level up, and unlock achievements.
+          <div className="p-6 rounded-lg bg-slate-900 border border-slate-800 space-y-2">
+            <h3 className="font-bold text-white text-base">RPG Progression Engine</h3>
+            <p className="text-slate-400 leading-relaxed">
+              Earn XP for logging transactions, building daily activity streaks, completing challenges, and reaching savings milestones.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-lg bg-slate-900 border border-slate-800 space-y-2">
+            <h3 className="font-bold text-white text-base">Machine Learning Analytics</h3>
+            <p className="text-slate-400 leading-relaxed">
+              Ridge Regression spending forecasting and Isolation Forest transaction anomaly detection.
             </p>
           </div>
         </div>
       </section>
 
       {/* How It Works */}
-      <section className="py-20 px-6 bg-slate-900/40 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-            <h2 className="text-3xl font-extrabold text-white">How FinQuest Works</h2>
-            <p className="text-slate-400 text-base">Five simple steps from setup to financial freedom.</p>
-          </div>
+      <section className="py-16 px-6 bg-slate-900/50 border-t border-slate-900">
+        <div className="max-w-6xl mx-auto space-y-8">
+          <h2 className="text-2xl font-bold text-white">Workflow Pipeline</h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-5 gap-6">
-            {[
-              { step: '01', title: 'Track Money', desc: 'Log daily income & expenses effortlessly.' },
-              { step: '02', title: 'Build Habits', desc: 'Maintain streaks by staying on budget.' },
-              { step: '03', title: 'Challenges', desc: 'Participate in targeted savings quests.' },
-              { step: '04', title: 'Earn XP', desc: 'Watch your financial level & score climb.' },
-              { step: '05', title: 'Reach Goals', desc: 'Hit major milestones ahead of schedule.' },
-            ].map((s) => (
-              <div key={s.step} className="p-4 rounded-xl bg-slate-900 border border-slate-800 flex flex-col justify-between">
-                <span className="text-xs font-black text-indigo-400 font-mono">{s.step}</span>
-                <div className="mt-4">
-                  <h4 className="font-bold text-white text-base">{s.title}</h4>
-                  <p className="text-xs text-slate-400 mt-1 leading-relaxed">{s.desc}</p>
-                </div>
-              </div>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
+            <div className="p-4 rounded bg-slate-900 border border-slate-800 space-y-2">
+              <span className="font-mono text-blue-400 font-bold">STEP 01</span>
+              <h4 className="font-bold text-white text-sm">Track Income & Expenses</h4>
+              <p className="text-slate-400">Log entries manually or via AI quick-add parser.</p>
+            </div>
+
+            <div className="p-4 rounded bg-slate-900 border border-slate-800 space-y-2">
+              <span className="font-mono text-blue-400 font-bold">STEP 02</span>
+              <h4 className="font-bold text-white text-sm">Maintain Activity Streaks</h4>
+              <p className="text-slate-400">Build continuous tracking habits to earn multipliers.</p>
+            </div>
+
+            <div className="p-4 rounded bg-slate-900 border border-slate-800 space-y-2">
+              <span className="font-mono text-blue-400 font-bold">STEP 03</span>
+              <h4 className="font-bold text-white text-sm">Participate in Quests</h4>
+              <p className="text-slate-400">Complete 7-day budget targets and savings sprints.</p>
+            </div>
+
+            <div className="p-4 rounded bg-slate-900 border border-slate-800 space-y-2">
+              <span className="font-mono text-blue-400 font-bold">STEP 04</span>
+              <h4 className="font-bold text-white text-sm">Earn XP & Level Up</h4>
+              <p className="text-slate-400">Unlock achievements and improve financial health.</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-6 text-center max-w-4xl mx-auto w-full">
-        <div className="p-10 rounded-3xl bg-gradient-to-r from-indigo-900/60 via-purple-900/60 to-slate-900 border border-indigo-700/50 space-y-6">
-          <h2 className="text-3xl sm:text-4xl font-black text-white">
-            Ready to Start Your Financial Quest?
+      {/* CTA */}
+      <section className="py-16 px-6 text-center max-w-3xl mx-auto w-full">
+        <div className="p-8 rounded-lg bg-slate-900 border border-slate-800 space-y-4">
+          <h2 className="text-2xl font-bold text-white">
+            Start Your Financial Quest Today
           </h2>
-          <p className="text-slate-300 max-w-xl mx-auto">
-            Build healthy money habits, level up your savings, and let AI guide your journey today.
+          <p className="text-slate-400 text-sm max-w-md mx-auto">
+            Build responsible money habits, track your progress, and let AI guide your financial goals.
           </p>
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-base font-bold text-white bg-indigo-600 hover:bg-indigo-500 transition-all shadow-lg"
+            className="inline-block px-6 py-3 rounded-md text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
           >
-            <span>Start Your Quest</span>
-            <ArrowRight className="w-5 h-5" />
+            Launch Application
           </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-slate-800 py-8 px-6 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span>© 2026 FinQuest. All rights reserved.</span>
+      <footer className="mt-auto border-t border-slate-900 py-6 px-6 text-center text-xs text-slate-500">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <span>© 2026 FinQuest SaaS Platform. All rights reserved.</span>
           <div className="flex items-center gap-6">
-            <button onClick={() => setShowTOS(true)} className="hover:text-slate-300">
+            <button onClick={() => setShowTOS(true)} className="hover:text-slate-300 text-slate-400">
               Terms of Service
             </button>
-            <button onClick={() => setShowPrivacy(true)} className="hover:text-slate-300">
+            <button onClick={() => setShowPrivacy(true)} className="hover:text-slate-300 text-slate-400">
               Privacy Policy
             </button>
           </div>
         </div>
       </footer>
 
-      {/* TOS Modal */}
+      {/* Working Terms of Service Modal */}
       {showTOS && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="fin-card max-w-lg p-6 bg-slate-900 border-slate-800 space-y-4">
-            <h3 className="font-bold text-lg text-white">Terms of Service</h3>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              FinQuest provides gamified financial management and informational AI insights. FinQuest is not a registered financial advisory service. Users are responsible for managing their own funds.
-            </p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80">
+          <div className="fin-card max-w-lg p-6 bg-slate-900 border-slate-800 space-y-4 text-left">
+            <h3 className="font-bold text-base text-white">Terms of Service</h3>
+            <div className="text-xs text-slate-300 leading-relaxed space-y-2 max-h-60 overflow-y-auto pr-2">
+              <p>1. <strong>Informational Platform:</strong> FinQuest provides gamified expense management and informational insights. It is not a licensed financial advisory service.</p>
+              <p>2. <strong>Account Responsibility:</strong> Users are responsible for maintaining the accuracy of their entered transaction data.</p>
+              <p>3. <strong>Data Ownership:</strong> You retain ownership of your financial records and can export or delete them at any time.</p>
+            </div>
             <button
               onClick={() => setShowTOS(false)}
-              className="w-full py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg"
+              className="w-full py-2 bg-blue-600 text-white text-xs font-bold rounded-md"
             >
-              Close
+              Close Terms of Service
             </button>
           </div>
         </div>
       )}
 
-      {/* Privacy Modal */}
+      {/* Working Privacy Policy Modal */}
       {showPrivacy && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="fin-card max-w-lg p-6 bg-slate-900 border-slate-800 space-y-4">
-            <h3 className="font-bold text-lg text-white">Privacy Policy</h3>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              Your financial data is encrypted and strictly isolated to your user account. We do not sell user data to third parties. AI features process anonymized data metrics strictly for generating user coaching responses.
-            </p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80">
+          <div className="fin-card max-w-lg p-6 bg-slate-900 border-slate-800 space-y-4 text-left">
+            <h3 className="font-bold text-base text-white">Privacy Policy</h3>
+            <div className="text-xs text-slate-300 leading-relaxed space-y-2 max-h-60 overflow-y-auto pr-2">
+              <p>1. <strong>Data Minimization:</strong> Financial data is strictly isolated to your authenticated account.</p>
+              <p>2. <strong>No Third-Party Data Sales:</strong> We do not sell or monetize personal financial entries.</p>
+              <p>3. <strong>AI Analytics:</strong> AI requests process aggregated, anonymized metrics strictly to provide user financial summaries.</p>
+            </div>
             <button
               onClick={() => setShowPrivacy(false)}
-              className="w-full py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg"
+              className="w-full py-2 bg-blue-600 text-white text-xs font-bold rounded-md"
             >
-              Close
+              Close Privacy Policy
             </button>
           </div>
         </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Sparkles, Check, ArrowRight } from 'lucide-react';
+import { X, Check } from 'lucide-react';
 import { fetchAPI } from '../lib/api';
 
 interface QuickAddModalProps {
@@ -15,7 +15,7 @@ export default function QuickAddModal({ isOpen, onClose, onSuccess }: QuickAddMo
   const [loading, setLoading] = useState(false);
   const [parsed, setParsed] = useState<{
     suggested_category: string;
-    suggested_amount: float;
+    suggested_amount: number;
     suggested_type: string;
     suggested_description: string;
   } | null>(null);
@@ -32,7 +32,6 @@ export default function QuickAddModal({ isOpen, onClose, onSuccess }: QuickAddMo
       });
       setParsed(data);
     } catch {
-      // Heuristic fallback inside UI if offline
       const textLower = inputText.toLowerCase();
       let cat = 'Shopping';
       if (textLower.includes('swiggy') || textLower.includes('food') || textLower.includes('coffee')) cat = 'Food & Dining';
@@ -66,7 +65,7 @@ export default function QuickAddModal({ isOpen, onClose, onSuccess }: QuickAddMo
         })
       });
     } catch (err) {
-      console.log('Saved to client state');
+      console.log('Saved to state');
     } finally {
       setLoading(false);
       setParsed(null);
@@ -77,28 +76,22 @@ export default function QuickAddModal({ isOpen, onClose, onSuccess }: QuickAddMo
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="fin-card w-full max-w-lg p-6 bg-white dark:bg-slate-900 shadow-2xl relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60">
+      <div className="fin-card w-full max-w-lg p-6 bg-white dark:bg-slate-900 relative border border-slate-200 dark:border-slate-800">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+          className="absolute top-4 right-4 p-1 rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
-            <Sparkles className="w-4 h-4" />
-          </div>
-          <div>
-            <h3 className="font-bold text-lg text-slate-900 dark:text-slate-100">
-              AI Smart Quick-Add
-            </h3>
-            <p className="text-xs text-slate-500">Type naturally (e.g., "Swiggy 450" or "Uber 250")</p>
-          </div>
+        <div className="mb-4">
+          <h3 className="font-bold text-base text-slate-900 dark:text-slate-100">
+            AI Quick-Add Transaction
+          </h3>
+          <p className="text-xs text-slate-500">Type entry naturally (e.g., "Swiggy 450" or "Uber 250")</p>
         </div>
 
-        {/* Input area */}
         <div className="space-y-4">
           <div className="flex gap-2">
             <input
@@ -106,54 +99,51 @@ export default function QuickAddModal({ isOpen, onClose, onSuccess }: QuickAddMo
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder="e.g. Swiggy 450 or Salary 75000"
-              className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="flex-1 px-3 py-2 rounded-md border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
               onKeyDown={(e) => e.key === 'Enter' && handleAIParse()}
             />
             <button
               onClick={handleAIParse}
               disabled={loading || !inputText}
-              className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl text-sm font-semibold flex items-center gap-1.5 transition-colors"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-md text-xs font-semibold transition-colors"
             >
-              {loading ? 'Analyzing...' : 'Parse AI'}
+              {loading ? 'Analyzing...' : 'Parse Input'}
             </button>
           </div>
 
-          {/* AI Suggestion Output Preview */}
           {parsed && (
-            <div className="p-4 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 space-y-3">
-              <div className="flex items-center justify-between text-xs font-semibold text-indigo-600 dark:text-indigo-400">
-                <span>AI Categorization Result</span>
-                <span className="px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900 text-[10px]">
-                  Confirm before saving
-                </span>
+            <div className="p-4 rounded-md bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-3">
+              <div className="flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-300">
+                <span>Categorization Result</span>
+                <span className="text-[10px] text-slate-400">User Confirmation Required</span>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="grid grid-cols-2 gap-2 text-xs">
                 <div>
-                  <span className="text-xs text-slate-500">Category:</span>
+                  <span className="text-slate-500">Category:</span>
                   <p className="font-bold text-slate-900 dark:text-slate-100">{parsed.suggested_category}</p>
                 </div>
                 <div>
-                  <span className="text-xs text-slate-500">Amount:</span>
+                  <span className="text-slate-500">Amount:</span>
                   <p className="font-bold text-slate-900 dark:text-slate-100">₹{parsed.suggested_amount}</p>
                 </div>
                 <div>
-                  <span className="text-xs text-slate-500">Type:</span>
+                  <span className="text-slate-500">Type:</span>
                   <p className="font-bold uppercase text-slate-900 dark:text-slate-100">{parsed.suggested_type}</p>
                 </div>
                 <div>
-                  <span className="text-xs text-slate-500">Description:</span>
-                  <p className="font-medium text-slate-900 dark:text-slate-100 truncate">{parsed.suggested_description}</p>
+                  <span className="text-slate-500">Description:</span>
+                  <p className="font-semibold text-slate-900 dark:text-slate-100 truncate">{parsed.suggested_description}</p>
                 </div>
               </div>
 
               <button
                 onClick={handleSaveTransaction}
                 disabled={loading}
-                className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-sm flex items-center justify-center gap-2 shadow-sm transition-colors"
+                className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-md text-xs flex items-center justify-center gap-1.5 transition-colors"
               >
                 <Check className="w-4 h-4" />
-                Confirm & Log Transaction (+5 XP)
+                Confirm & Log (+5 XP)
               </button>
             </div>
           )}

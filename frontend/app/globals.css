@@ -8,61 +8,65 @@
     --bg-card: #ffffff;
     --bg-card-hover: #f1f5f9;
     --text-primary: #0f172a;
-    --text-secondary: #64748b;
+    --text-secondary: #475569;
     --border-color: #e2e8f0;
   }
 
   .dark {
-    --bg-primary: #0b0f19;
-    --bg-card: #131b2e;
-    --bg-card-hover: #1c2640;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --border-color: #1e293b;
+    --bg-primary: #0b0f17;
+    --bg-card: #111827;
+    --bg-card-hover: #1f2937;
+    --text-primary: #f9fafb;
+    --text-secondary: #9ca3af;
+    --border-color: #1f2937;
   }
 
   body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
 }
 
-/* Custom Scrollbars */
+/* Custom Minimal Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #94a3b8;
-  border-radius: 9999px;
+  background: #cbd5e1;
+  border-radius: 4px;
 }
 .dark ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #374151;
 }
 
-/* Sleek UI Card Classes */
+/* Clean Professional SaaS Cards (No drop shadows, crisp 1px borders) */
 .fin-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease-in-out;
+  border-radius: 8px;
+  transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
 }
 .fin-card:hover {
-  border-color: #6366f1;
+  border-color: #3b82f6;
 }
 
-/* Glass Accent Pill */
-.fin-pill {
-  background: rgba(99, 102, 241, 0.1);
-  color: #6366f1;
-  border: 1px solid rgba(99, 102, 241, 0.2);
-  border-radius: 9999px;
-  padding: 4px 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
+/* Skeleton Loading Pulse */
+.skeleton-box {
+  background-color: #e2e8f0;
+  border-radius: 6px;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+.dark .skeleton-box {
+  background-color: #1f2937;
+}
+
+@keyframes skeletonPulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.3; }
+  100% { opacity: 0.6; }
 }
