@@ -23,13 +23,13 @@ export default function LandingPage() {
 
           <div className="flex items-center gap-4">
             <Link
-              href="/dashboard"
+              href="/login"
               className="text-xs font-semibold text-slate-300 hover:text-white transition-colors"
             >
               Sign In
             </Link>
             <Link
-              href="/dashboard"
+              href="/login"
               className="px-4 py-2 rounded-md text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
             >
               Start Your Quest
@@ -54,7 +54,7 @@ export default function LandingPage() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
           <Link
-            href="/dashboard"
+            href="/login"
             className="w-full sm:w-auto px-6 py-3 rounded-md text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
           >
             Start Your Quest
@@ -177,7 +177,7 @@ export default function LandingPage() {
             Build responsible money habits, track your progress, and let AI guide your financial goals.
           </p>
           <Link
-            href="/dashboard"
+            href="/login"
             className="inline-block px-6 py-3 rounded-md text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
           >
             Launch Application

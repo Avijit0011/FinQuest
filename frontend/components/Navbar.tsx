@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Sun, Moon, Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Sun, Moon, Plus, LogOut } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 interface NavbarProps {
   userLevel?: number;
@@ -12,11 +14,13 @@ interface NavbarProps {
 }
 
 export default function Navbar({
-  userLevel = 12,
-  userXP = 2450,
-  streakCount = 14,
+  userLevel,
+  userXP,
+  streakCount,
   onQuickAddClick
 }: NavbarProps) {
+  const router = useRouter();
+  const { user, isAuthenticated, logout } = useAuth();
   const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
@@ -27,8 +31,22 @@ export default function Navbar({
     }
   }, [darkMode]);
 
-  const xpCurrent = userXP % 1000;
+  const level = userLevel ?? (user?.level || 12);
+  const xp = userXP ?? (user?.xp || 2450);
+  const streak = streakCount ?? (user?.streak_count || 14);
+
+  const xpCurrent = xp % 1000;
   const xpPct = (xpCurrent / 1000) * 100;
+
+  // Compute initials
+  const initials = user?.name
+    ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    : 'AM';
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 lg:px-8 py-3">
@@ -46,16 +64,16 @@ export default function Navbar({
           </span>
         </Link>
 
-        {/* Gamification Bar (Level, XP, Streak) - Clean typography, zero emojis */}
+        {/* Gamification Bar (Level, XP, Streak) */}
         <div className="hidden md:flex items-center gap-5 bg-slate-50 dark:bg-slate-800/80 px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold px-2 py-0.5 bg-blue-600 text-white rounded">
-              Lvl {userLevel}
+              Lvl {level}
             </span>
             <div className="flex flex-col w-24">
               <div className="flex justify-between text-[11px] font-semibold text-slate-600 dark:text-slate-300">
                 <span>XP</span>
-                <span className="text-blue-600 dark:text-blue-400 font-bold">{userXP}</span>
+                <span className="text-blue-600 dark:text-blue-400 font-bold">{xp}</span>
               </div>
               <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded mt-0.5 overflow-hidden">
                 <div 
@@ -70,7 +88,7 @@ export default function Navbar({
 
           {/* Streak Indicator */}
           <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
-            Streak: <span className="text-blue-600 dark:text-blue-400 font-extrabold">{streakCount} Days</span>
+            Streak: <span className="text-blue-600 dark:text-blue-400 font-extrabold">{streak} Days</span>
           </div>
         </div>
 
@@ -94,10 +112,28 @@ export default function Navbar({
 
           <Link
             href="/settings"
-            className="w-8 h-8 rounded bg-slate-800 text-white font-semibold text-xs flex items-center justify-center border border-slate-700"
+            title={user ? `${user.name} (${user.email})` : 'Settings'}
+            className="w-8 h-8 rounded bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs flex items-center justify-center border border-slate-700 transition-colors"
           >
-            AM
+            {initials}
           </Link>
+
+          {isAuthenticated ? (
+            <button
+              onClick={handleLogout}
+              title="Sign Out"
+              className="p-2 rounded-md text-rose-400 hover:bg-rose-500/10 border border-rose-500/20 transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-md border border-slate-700 transition-colors"
+            >
+              Sign In
+            </Link>
+          )}
         </div>
       </div>
     </header>
