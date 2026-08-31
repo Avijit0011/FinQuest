@@ -49,3 +49,31 @@ def test_user_registration_and_login():
         tokens = login_res.json()
         assert "access_token" in tokens
         assert "refresh_token" in tokens
+
+def test_create_and_delete_goal():
+    email = "goal_test_user@finquest.com"
+    client.post("/api/v1/auth/register", json={
+        "name": "Goal Tester",
+        "email": email,
+        "password": "password123"
+    })
+    login_res = client.post("/api/v1/auth/login", json={"email": email, "password": "password123"})
+    token = login_res.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # Create Goal
+    create_res = client.post("/api/v1/auth/../goals" if False else "/api/v1/goals", headers=headers, json={
+        "title": "Test Camera Goal",
+        "target_amount": 50000.0,
+        "category": "Gadgets",
+        "deadline": "2027-12-31T00:00:00"
+    })
+    assert create_res.status_code == 201
+    goal = create_res.json()
+    goal_id = goal["id"]
+    assert goal["title"] == "Test Camera Goal"
+
+    # Delete Goal
+    del_res = client.delete(f"/api/v1/goals/{goal_id}", headers=headers)
+    assert del_res.status_code == 204
+

@@ -4,43 +4,98 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import HealthScoreGauge from '../../components/HealthScoreGauge';
 import { CardSkeleton } from '../../components/SkeletonLoader';
+import { fetchAPI } from '../../lib/api';
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const [data] = useState({
-    totalBalance: 248500,
-    monthlyIncome: 75000,
-    monthlyExpense: 31200,
-    netSavings: 43800,
-    level: 12,
-    xp: 2450,
-    streak: 14,
-    healthScore: 78,
-    aiInsight: "Food spending is 12% lower than last month. You are currently on track to reach your MacBook Pro savings goal.",
-    recentTransactions: [
-      { id: 1, desc: 'Swiggy Gourmet Order', category: 'Food & Dining', amount: 450, type: 'expense', date: 'Today' },
-      { id: 2, desc: 'Monthly Metro Pass', category: 'Transportation', amount: 1200, type: 'expense', date: 'Yesterday' },
-      { id: 3, desc: 'Freelance UI Payment', category: 'Income & Salary', amount: 15000, type: 'income', date: '2 days ago' },
-      { id: 4, desc: 'Amazon Electronics', category: 'Shopping', amount: 2490, type: 'expense', date: '3 days ago' },
-    ],
+  const [data, setData] = useState({
+    totalBalance: 0,
+    monthlyIncome: 0,
+    monthlyExpense: 0,
+    netSavings: 0,
+    level: 1,
+    xp: 0,
+    streak: 0,
+    healthScore: 0,
+    aiInsight: "Welcome to FinQuest! Log your first transaction or set up a savings goal to start tracking your financial metrics.",
+    recentTransactions: [] as any[],
     activeChallenge: {
       title: '7-Day Budget Challenge',
-      progress: 4,
+      progress: 0,
       target: 7,
       xpReward: 250,
-      daysLeft: 3
     },
-    goals: [
-      { id: 1, title: 'New MacBook Pro M3', current: 68000, target: 150000, pct: 45.3 },
-      { id: 2, title: 'Emergency Safety Fund', current: 180000, target: 250000, pct: 72.0 }
-    ]
+    goals: [] as any[]
   });
+
+  useEffect(() => {
+    async function loadDashboardData() {
+      try {
+        const [summary, healthRes, insightRes, txRes, goalsRes, gamificationRes] = await Promise.allSettled([
+          fetchAPI('/analytics/summary'),
+          fetchAPI('/health-score'),
+          fetchAPI('/ai/insight'),
+          fetchAPI('/transactions?size=5'),
+          fetchAPI('/goals'),
+          fetchAPI('/gamification/status')
+        ]);
+
+        setData((prev) => {
+          const updated = { ...prev };
+
+          if (summary.status === 'fulfilled' && summary.value) {
+            updated.totalBalance = summary.value.total_income ? summary.value.net_savings : 0;
+            updated.monthlyIncome = summary.value.total_income ?? 0;
+            updated.monthlyExpense = summary.value.total_expense ?? 0;
+            updated.netSavings = summary.value.net_savings ?? 0;
+          }
+
+          if (healthRes.status === 'fulfilled' && healthRes.value) {
+            updated.healthScore = healthRes.value.overall_score ?? 0;
+          }
+
+          if (insightRes.status === 'fulfilled' && insightRes.value) {
+            updated.aiInsight = insightRes.value.insight ?? prev.aiInsight;
+          }
+
+          if (txRes.status === 'fulfilled' && txRes.value?.items) {
+            updated.recentTransactions = txRes.value.items.map((t: any) => ({
+              id: t.id,
+              desc: t.description,
+              category: t.category?.name || 'General',
+              amount: t.amount,
+              type: t.transaction_type,
+              date: typeof t.date === 'string' ? t.date.split('T')[0] : 'Recent'
+            }));
+          }
+
+          if (goalsRes.status === 'fulfilled' && Array.isArray(goalsRes.value)) {
+            updated.goals = goalsRes.value.slice(0, 3).map((g: any) => ({
+              id: g.id,
+              title: g.title,
+              current: g.current_amount,
+              target: g.target_amount,
+              pct: g.percentage
+            }));
+          }
+
+          if (gamificationRes.status === 'fulfilled' && gamificationRes.value) {
+            updated.level = gamificationRes.value.level ?? 1;
+            updated.xp = gamificationRes.value.xp ?? 0;
+            updated.streak = gamificationRes.value.streak_count ?? 0;
+          }
+
+          return updated;
+        });
+      } catch (err) {
+        console.warn('[Dashboard API] Failed to load data:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadDashboardData();
+  }, []);
 
   if (loading) {
     return (
@@ -92,7 +147,7 @@ export default function Dashboard() {
             ₹{data.totalBalance.toLocaleString()}
           </div>
           <span className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold mt-1 inline-block">
-            +12.4% this month
+            Net Account Balance
           </span>
         </div>
 
@@ -109,7 +164,7 @@ export default function Dashboard() {
           <div className="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">
             ₹{data.monthlyExpense.toLocaleString()}
           </div>
-          <span className="text-[11px] text-slate-400 mt-1 inline-block">69% of budget capacity</span>
+          <span className="text-[11px] text-slate-400 mt-1 inline-block">Verified Outflow</span>
         </div>
 
         <div className="fin-card p-4">
@@ -117,7 +172,7 @@ export default function Dashboard() {
           <div className="text-xl font-bold text-blue-600 dark:text-blue-400 mt-1">
             ₹{data.netSavings.toLocaleString()}
           </div>
-          <span className="text-[11px] text-slate-400 mt-1 inline-block">+200 XP rewarded</span>
+          <span className="text-[11px] text-slate-400 mt-1 inline-block">Current Period Savings</span>
         </div>
       </div>
 
@@ -178,19 +233,28 @@ export default function Dashboard() {
             </Link>
           </div>
 
-          <div className="space-y-3">
-            {data.goals.map((g) => (
-              <div key={g.id} className="p-3 rounded-md bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 space-y-2">
-                <div className="flex justify-between items-center text-xs font-bold">
-                  <span className="text-slate-900 dark:text-slate-100">{g.title}</span>
-                  <span className="text-blue-600 dark:text-blue-400">{g.pct}%</span>
+          {data.goals.length === 0 ? (
+            <div className="text-center py-6 space-y-2 text-xs text-slate-500">
+              <p>No active savings goals found.</p>
+              <Link href="/goals" className="text-blue-400 font-bold hover:underline">
+                + Add your first savings goal
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {data.goals.map((g) => (
+                <div key={g.id} className="p-3 rounded-md bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 space-y-2">
+                  <div className="flex justify-between items-center text-xs font-bold">
+                    <span className="text-slate-900 dark:text-slate-100">{g.title}</span>
+                    <span className="text-blue-600 dark:text-blue-400">{g.pct}%</span>
+                  </div>
+                  <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded overflow-hidden">
+                    <div className="bg-blue-600 h-full rounded" style={{ width: `${Math.min(100, g.pct)}%` }} />
+                  </div>
                 </div>
-                <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded overflow-hidden">
-                  <div className="bg-blue-600 h-full rounded" style={{ width: `${g.pct}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="fin-card p-5 space-y-4">
@@ -201,19 +265,28 @@ export default function Dashboard() {
             </Link>
           </div>
 
-          <div className="space-y-2 text-xs">
-            {data.recentTransactions.map((tx) => (
-              <div key={tx.id} className="flex justify-between p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors">
-                <div>
-                  <p className="font-semibold text-slate-900 dark:text-slate-100">{tx.desc}</p>
-                  <span className="text-[10px] text-slate-500">{tx.category} • {tx.date}</span>
+          {data.recentTransactions.length === 0 ? (
+            <div className="text-center py-6 space-y-2 text-xs text-slate-500">
+              <p>No recent transactions logged.</p>
+              <Link href="/transactions" className="text-blue-400 font-bold hover:underline">
+                + Add your first transaction
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-2 text-xs">
+              {data.recentTransactions.map((tx) => (
+                <div key={tx.id} className="flex justify-between p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors">
+                  <div>
+                    <p className="font-semibold text-slate-900 dark:text-slate-100">{tx.desc}</p>
+                    <span className="text-[10px] text-slate-500">{tx.category} • {tx.date}</span>
+                  </div>
+                  <span className={`font-bold ${tx.type === 'income' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-900 dark:text-slate-100'}`}>
+                    {tx.type === 'income' ? '+' : '-'}₹{tx.amount}
+                  </span>
                 </div>
-                <span className={`font-bold ${tx.type === 'income' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-900 dark:text-slate-100'}`}>
-                  {tx.type === 'income' ? '+' : '-'}₹{tx.amount}
-                </span>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

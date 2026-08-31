@@ -1,20 +1,99 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Trophy, Flame, Target, CheckCircle2, Clock } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Trophy, CheckCircle2, Clock, ShieldAlert } from 'lucide-react';
+import { fetchAPI } from '../../lib/api';
+
+interface ChallengeItem {
+  id: number;
+  challenge_id: number;
+  title: string;
+  desc: string;
+  difficulty: string;
+  xp: number;
+  progress: number;
+  target: number;
+  daysLeft: number;
+  joined: boolean;
+  pct: number;
+}
 
 export default function ChallengesPage() {
-  const [challenges, setChallenges] = useState([
-    { id: 1, title: '7-Day Budget Challenge', desc: 'Stay within your daily spending target for 7 consecutive days.', difficulty: 'Easy', xp: 250, progress: 4, target: 7, daysLeft: 3, joined: true },
-    { id: 2, title: 'Monthly Saver Quest', desc: 'Save ₹5,000 into your active savings goals this month.', difficulty: 'Medium', xp: 500, progress: 3200, target: 5000, daysLeft: 12, joined: true },
-    { id: 3, title: '3-Day No-Spend Blitz', desc: 'Complete 3 days without discretionary shopping or restaurant orders.', difficulty: 'Hard', xp: 300, progress: 0, target: 3, daysLeft: 5, joined: false },
-    { id: 4, title: 'Food Budget Mastery', desc: 'Keep food and eating out spending below ₹5,000 this month.', difficulty: 'Medium', xp: 350, progress: 0, target: 5000, daysLeft: 18, joined: false },
-  ]);
+  const [challenges, setChallenges] = useState<ChallengeItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleJoin = (id: number) => {
-    setChallenges((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, joined: true } : c))
-    );
+  const loadChallenges = async () => {
+    try {
+      setLoading(true);
+      const [joinedRes, availableRes] = await Promise.allSettled([
+        fetchAPI('/gamification/challenges'),
+        fetchAPI('/gamification/available-challenges')
+      ]);
+
+      const items: ChallengeItem[] = [];
+
+      if (joinedRes.status === 'fulfilled' && Array.isArray(joinedRes.value)) {
+        joinedRes.value.forEach((uc: any) => {
+          const c = uc.challenge;
+          const end = new Date(uc.end_date);
+          const daysLeft = Math.max(1, Math.ceil((end.getTime() - Date.now()) / (1000 * 3600 * 24)));
+
+          items.push({
+            id: uc.id,
+            challenge_id: c.id,
+            title: c.title,
+            desc: c.description,
+            difficulty: c.difficulty || 'Medium',
+            xp: c.xp_reward || 250,
+            progress: uc.current_progress || 0,
+            target: c.target_value || 7,
+            daysLeft,
+            joined: true,
+            pct: uc.percentage || 0
+          });
+        });
+      }
+
+      if (availableRes.status === 'fulfilled' && Array.isArray(availableRes.value)) {
+        availableRes.value.forEach((c: any) => {
+          items.push({
+            id: c.id,
+            challenge_id: c.id,
+            title: c.title,
+            desc: c.description,
+            difficulty: c.difficulty || 'Easy',
+            xp: c.xp_reward || 250,
+            progress: 0,
+            target: c.target_value || 7,
+            daysLeft: c.duration_days || 7,
+            joined: false,
+            pct: 0
+          });
+        });
+      }
+
+      setChallenges(items);
+    } catch (err) {
+      console.warn('[Challenges API] Error loading challenges:', err);
+      setChallenges([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadChallenges();
+  }, []);
+
+  const handleJoin = async (challengeId: number) => {
+    try {
+      await fetchAPI(`/gamification/challenges/${challengeId}/join`, {
+        method: 'POST'
+      });
+      await loadChallenges();
+    } catch (err) {
+      console.warn('[Join Challenge Error]', err);
+    }
   };
 
   return (
@@ -28,11 +107,22 @@ export default function ChallengesPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {challenges.map((c) => {
-          const pct = Math.min(100, (c.progress / c.target) * 100);
-
-          return (
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="fin-card p-6 h-40 animate-pulse bg-slate-800/40" />
+          <div className="fin-card p-6 h-40 animate-pulse bg-slate-800/40" />
+        </div>
+      ) : challenges.length === 0 ? (
+        <div className="fin-card p-12 text-center space-y-3">
+          <Trophy className="w-12 h-12 text-slate-600 mx-auto" />
+          <h3 className="font-bold text-base text-slate-300">No active challenges available</h3>
+          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+            All system quests are completed! Check back later for new financial goals and challenges.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {challenges.map((c) => (
             <div key={c.id} className="fin-card p-6 flex flex-col justify-between space-y-4">
               <div>
                 <div className="flex justify-between items-center mb-3">
@@ -55,10 +145,10 @@ export default function ChallengesPage() {
                   <div className="mt-4 space-y-1">
                     <div className="flex justify-between text-xs font-bold">
                       <span>Progress</span>
-                      <span>{c.progress} / {c.target} ({pct.toFixed(0)}%)</span>
+                      <span>{c.progress} / {c.target} ({c.pct.toFixed(0)}%)</span>
                     </div>
                     <div className="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                      <div className="bg-amber-500 h-full rounded-full transition-all" style={{ width: `${pct}%` }} />
+                      <div className="bg-blue-600 h-full rounded-full transition-all" style={{ width: `${Math.min(100, c.pct)}%` }} />
                     </div>
                   </div>
                 )}
@@ -76,17 +166,17 @@ export default function ChallengesPage() {
                   </span>
                 ) : (
                   <button
-                    onClick={() => handleJoin(c.id)}
-                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg transition-colors"
+                    onClick={() => handleJoin(c.challenge_id)}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg transition-colors"
                   >
                     Accept Quest
                   </button>
                 )}
               </div>
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

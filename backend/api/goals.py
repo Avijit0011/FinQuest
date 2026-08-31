@@ -94,3 +94,17 @@ def add_contribution(
     db.commit()
     db.refresh(goal)
     return format_goal_response(goal)
+
+@router.delete("/{goal_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_goal(
+    goal_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    goal = db.query(Goal).filter(Goal.id == goal_id, Goal.user_id == current_user.id).first()
+    if not goal:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Goal not found")
+
+    db.delete(goal)
+    db.commit()
+    return None
