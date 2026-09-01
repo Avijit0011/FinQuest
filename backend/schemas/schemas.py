@@ -12,6 +12,13 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
+class SocialLoginRequest(BaseModel):
+    provider: str
+    email: EmailStr
+    name: Optional[str] = "Adventurer"
+    avatar: Optional[str] = None
+    id_token: Optional[str] = None
+
 class Token(BaseModel):
     access_token: str
     refresh_token: str

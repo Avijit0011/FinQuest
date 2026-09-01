@@ -27,6 +27,7 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
+  socialLogin: (provider: string, email: string, name?: string, avatar?: string) => Promise<void>;
   logout: () => void;
   updateUserProfile: (data: Partial<User>) => void;
 }
@@ -98,6 +99,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const socialLogin = async (provider: string, email: string, name?: string, avatar?: string) => {
+    setLoading(true);
+    try {
+      const res = await fetchAPI('/auth/social-login', {
+        method: 'POST',
+        body: JSON.stringify({ provider, email, name, avatar }),
+      });
+
+      if (res.access_token) {
+        localStorage.setItem('finquest_token', res.access_token);
+        setToken(res.access_token);
+        await fetchCurrentUser(res.access_token);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('finquest_token');
     setToken(null);
@@ -117,6 +136,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loading,
         login,
         register,
+        socialLogin,
         logout,
         updateUserProfile,
       }}

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from backend.database import get_db
 from backend.models.models import User, Category
 from backend.schemas.schemas import (
-    UserRegister, UserLogin, Token, UserResponse, OnboardingData
+    UserRegister, UserLogin, SocialLoginRequest, Token, UserResponse, OnboardingData
 )
 from backend.auth.security import (
     get_password_hash, verify_password, create_access_token, create_refresh_token, get_current_user
@@ -60,6 +60,44 @@ def login_user(credentials: UserLogin, db: Session = Depends(get_db)):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password"
         )
+
+    access_token = create_access_token(data={"sub": str(user.id)})
+    refresh_token = create_refresh_token(data={"sub": str(user.id)})
+
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer"
+    }
+
+@router.post("/social-login", response_model=Token)
+def social_login(payload: SocialLoginRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == payload.email).first()
+    
+    if not user:
+        # Auto-provision social user
+        user = User(
+            name=payload.name or "Social Adventurer",
+            email=payload.email,
+            password_hash=get_password_hash("social_oauth_random_pwd_2026"),
+            avatar=payload.avatar or "avatar_default",
+            level=1,
+            xp=100,
+            streak_count=1,
+            currency="₹",
+            is_admin=False
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+        # Seed default categories for new user
+        for cat in DEFAULT_CATEGORIES:
+            db.add(Category(user_id=user.id, name=cat["name"], icon=cat["icon"], color=cat["color"], is_custom=False))
+        db.commit()
+    elif payload.avatar and user.avatar == "avatar_default":
+        user.avatar = payload.avatar
+        db.commit()
 
     access_token = create_access_token(data={"sub": str(user.id)})
     refresh_token = create_refresh_token(data={"sub": str(user.id)})

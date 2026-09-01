@@ -100,4 +100,17 @@ def test_update_user_profile_avatar():
     assert user_data["avatar"] == new_avatar
     assert user_data["name"] == "Avatar Tester Updated"
 
+def test_social_login():
+    res = client.post("/api/v1/auth/social-login", json={
+        "provider": "google",
+        "email": "google_test_adventurer@finquest.com",
+        "name": "Google Adventurer",
+        "avatar": "data:image/svg+xml;utf8,<svg></svg>"
+    })
+    assert res.status_code == 200
+    tokens = res.json()
+    assert "access_token" in tokens
+    assert "refresh_token" in tokens
+
+
 
