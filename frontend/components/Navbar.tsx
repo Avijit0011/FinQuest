@@ -49,46 +49,46 @@ export default function Navbar({
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 lg:px-8 py-3">
+    <header className="sticky top-0 z-40 w-full border-b border-stone-200 dark:border-stone-800 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md px-4 lg:px-8 py-3">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Brand Logo */}
         <Link href="/dashboard" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white font-bold text-lg">
+          <div className="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center text-white font-black text-lg shadow-md shadow-amber-600/20">
             Q
           </div>
-          <span className="font-bold text-lg text-slate-900 dark:text-slate-100 tracking-tight">
+          <span className="font-extrabold text-lg text-stone-900 dark:text-stone-100 tracking-tight">
             FinQuest
           </span>
-          <span className="text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 hidden sm:inline-block">
-            SaaS Platform
+          <span className="text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/60 hidden sm:inline-block">
+            Cozy Finance
           </span>
         </Link>
 
         {/* Gamification Bar (Level, XP, Streak) */}
-        <div className="hidden md:flex items-center gap-5 bg-slate-50 dark:bg-slate-800/80 px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
+        <div className="hidden md:flex items-center gap-5 bg-amber-50/50 dark:bg-stone-800/80 px-3.5 py-1.5 rounded-xl border border-amber-200/50 dark:border-stone-700/80">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold px-2 py-0.5 bg-blue-600 text-white rounded">
+            <span className="text-xs font-black px-2 py-0.5 bg-amber-600 text-white rounded-md shadow-sm">
               Lvl {level}
             </span>
             <div className="flex flex-col w-24">
-              <div className="flex justify-between text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+              <div className="flex justify-between text-[11px] font-semibold text-stone-600 dark:text-stone-300">
                 <span>XP</span>
-                <span className="text-blue-600 dark:text-blue-400 font-bold">{xp}</span>
+                <span className="text-amber-600 dark:text-amber-400 font-extrabold">{xp}</span>
               </div>
-              <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded mt-0.5 overflow-hidden">
+              <div className="w-full bg-stone-200 dark:bg-stone-700 h-1.5 rounded-full mt-0.5 overflow-hidden">
                 <div 
-                  className="bg-blue-600 h-full transition-all duration-300"
+                  className="bg-gradient-to-r from-amber-500 to-amber-600 h-full transition-all duration-300"
                   style={{ width: `${xpPct}%` }}
                 />
               </div>
             </div>
           </div>
 
-          <div className="h-4 w-px bg-slate-300 dark:bg-slate-700" />
+          <div className="h-4 w-px bg-stone-300 dark:bg-stone-700" />
 
           {/* Streak Indicator */}
-          <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
-            Streak: <span className="text-blue-600 dark:text-blue-400 font-extrabold">{streak} Days</span>
+          <div className="text-xs font-bold text-stone-700 dark:text-stone-300">
+            Streak: <span className="text-amber-600 dark:text-amber-400 font-black">{streak} Days</span>
           </div>
         </div>
 
@@ -96,7 +96,7 @@ export default function Navbar({
         <div className="flex items-center gap-3">
           <button
             onClick={onQuickAddClick}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-lg shadow-sm shadow-amber-600/20 transition-all hover:scale-[1.02]"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden sm:inline">Add Transaction</span>

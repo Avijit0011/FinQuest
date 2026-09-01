@@ -4,21 +4,21 @@
 
 @layer base {
   :root {
-    --bg-primary: #f8fafc;
+    --bg-primary: #fbf8f3;
     --bg-card: #ffffff;
-    --bg-card-hover: #f1f5f9;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --border-color: #e2e8f0;
+    --bg-card-hover: #f5efe6;
+    --text-primary: #29221d;
+    --text-secondary: #786c62;
+    --border-color: #e8dfd5;
   }
 
   .dark {
-    --bg-primary: #0b0f17;
-    --bg-card: #111827;
-    --bg-card-hover: #1f2937;
-    --text-primary: #f9fafb;
-    --text-secondary: #9ca3af;
-    --border-color: #1f2937;
+    --bg-primary: #161311;
+    --bg-card: #221c18;
+    --bg-card-hover: #2c241f;
+    --text-primary: #ede6de;
+    --text-secondary: #a3978c;
+    --border-color: #342a23;
   }
 
   body {
@@ -37,32 +37,33 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #d8c3b0;
   border-radius: 4px;
 }
 .dark ::-webkit-scrollbar-thumb {
-  background: #374151;
+  background: #44372e;
 }
 
-/* Clean Professional SaaS Cards (No drop shadows, crisp 1px borders) */
+/* Cozy Card Styling */
 .fin-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
-  transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px -2px rgba(44, 36, 31, 0.04);
+  transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 .fin-card:hover {
-  border-color: #3b82f6;
+  border-color: #f59e0b;
 }
 
 /* Skeleton Loading Pulse */
 .skeleton-box {
-  background-color: #e2e8f0;
+  background-color: #e8dfd5;
   border-radius: 6px;
   animation: skeletonPulse 1.5s ease-in-out infinite;
 }
 .dark .skeleton-box {
-  background-color: #1f2937;
+  background-color: #2c241f;
 }
 
 @keyframes skeletonPulse {

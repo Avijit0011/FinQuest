@@ -8,15 +8,15 @@ export default function LandingPage() {
   const [showPrivacy, setShowPrivacy] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-stone-950 text-stone-100 flex flex-col font-sans">
       {/* Top Header */}
-      <nav className="border-b border-slate-800 bg-slate-950 px-6 py-4">
+      <nav className="border-b border-stone-800 bg-stone-950 px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-blue-600 flex items-center justify-center font-bold text-white text-lg">
+            <div className="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center font-black text-white text-lg shadow-md shadow-amber-600/20">
               Q
             </div>
-            <span className="font-bold text-xl tracking-tight text-white">
+            <span className="font-extrabold text-xl tracking-tight text-white">
               FinQuest
             </span>
           </div>
@@ -24,13 +24,13 @@ export default function LandingPage() {
           <div className="flex items-center gap-4">
             <Link
               href="/login"
-              className="text-xs font-semibold text-slate-300 hover:text-white transition-colors"
+              className="text-xs font-semibold text-stone-300 hover:text-white transition-colors"
             >
               Sign In
             </Link>
             <Link
               href="/login"
-              className="px-4 py-2 rounded-md text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 rounded-lg text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 shadow-md shadow-amber-600/20 transition-all"
             >
               Start Your Quest
             </Link>
@@ -40,94 +40,94 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="px-6 pt-16 pb-20 max-w-6xl mx-auto text-center space-y-6">
-        <div className="inline-block px-3 py-1 rounded bg-slate-900 border border-slate-800 text-slate-400 text-xs font-semibold">
-          Gamified Personal Finance Platform
+        <div className="inline-block px-3.5 py-1 rounded-full bg-stone-900 border border-stone-800 text-amber-400 text-xs font-semibold">
+          Cozy Gamified Personal Finance Platform
         </div>
 
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-white max-w-3xl mx-auto leading-tight tracking-tight">
-          Turn Your Money Habits Into a Game.
+        <h1 className="text-3xl sm:text-5xl font-black text-stone-100 max-w-3xl mx-auto leading-tight tracking-tight">
+          Turn Your Money Habits Into a Cozy Quest.
         </h1>
 
-        <p className="text-base text-slate-400 max-w-2xl mx-auto font-normal leading-relaxed">
+        <p className="text-base text-stone-400 max-w-2xl mx-auto font-normal leading-relaxed">
           FinQuest combines smart expense tracking, savings goals, AI-driven coaching, and RPG level progression to make responsible personal finance clear and structured.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
           <Link
             href="/login"
-            className="w-full sm:w-auto px-6 py-3 rounded-md text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+            className="w-full sm:w-auto px-6 py-3 rounded-lg text-sm font-bold text-white bg-amber-600 hover:bg-amber-700 shadow-md shadow-amber-600/20 transition-all hover:scale-[1.02]"
           >
             Start Your Quest
           </Link>
           <a
             href="#features"
-            className="w-full sm:w-auto px-6 py-3 rounded-md text-sm font-semibold text-slate-300 bg-slate-900 border border-slate-800 hover:bg-slate-800 transition-colors"
+            className="w-full sm:w-auto px-6 py-3 rounded-lg text-sm font-semibold text-stone-300 bg-stone-900 border border-stone-800 hover:bg-stone-800 transition-colors"
           >
             Explore System Architecture
           </a>
         </div>
 
         {/* Real Product Demo Data Preview */}
-        <div className="mt-12 p-6 rounded-lg bg-slate-900 border border-slate-800 max-w-4xl mx-auto text-left space-y-4">
-          <div className="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800 pb-3">
+        <div className="mt-12 p-6 rounded-2xl bg-stone-900/90 border border-stone-800 max-w-4xl mx-auto text-left space-y-4 shadow-xl">
+          <div className="flex justify-between items-center text-xs text-stone-400 border-b border-stone-800 pb-3">
             <span className="font-bold text-white">System Demo Preview</span>
             <span>Level 12 • 2,450 / 3,000 XP • 14-Day Streak</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-            <div className="p-4 rounded bg-slate-950 border border-slate-800">
-              <span className="text-slate-400">Total Net Worth</span>
+            <div className="p-4 rounded-xl bg-stone-950 border border-stone-800">
+              <span className="text-stone-400">Total Net Worth</span>
               <p className="text-xl font-bold text-white mt-1">₹2,48,500</p>
-              <span className="text-blue-400 text-[11px] mt-1 inline-block">+12.4% this month</span>
+              <span className="text-amber-400 text-[11px] mt-1 inline-block">+12.4% this month</span>
             </div>
 
-            <div className="p-4 rounded bg-slate-950 border border-slate-800">
-              <span className="text-slate-400">Financial Health Index</span>
-              <p className="text-xl font-bold text-blue-400 mt-1">78 / 100</p>
-              <span className="text-slate-500 text-[11px] mt-1 inline-block">Deterministic Factor Rating</span>
+            <div className="p-4 rounded-xl bg-stone-950 border border-stone-800">
+              <span className="text-stone-400">Financial Health Index</span>
+              <p className="text-xl font-bold text-amber-500 mt-1">78 / 100</p>
+              <span className="text-stone-500 text-[11px] mt-1 inline-block">Deterministic Factor Rating</span>
             </div>
 
-            <div className="p-4 rounded bg-slate-950 border border-slate-800">
-              <span className="text-slate-400">Active Quest</span>
+            <div className="p-4 rounded-xl bg-stone-950 border border-stone-800">
+              <span className="text-stone-400">Active Quest</span>
               <p className="text-sm font-bold text-white mt-1">7-Day Budget Challenge</p>
-              <span className="text-slate-400 text-[11px] mt-1 inline-block">4 / 7 Days Completed (+250 XP)</span>
+              <span className="text-stone-400 text-[11px] mt-1 inline-block">4 / 7 Days Completed (+250 XP)</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* 2-Column Product Capabilities */}
-      <section id="features" className="py-16 px-6 max-w-6xl mx-auto w-full border-t border-slate-900">
+      <section id="features" className="py-16 px-6 max-w-6xl mx-auto w-full border-t border-stone-900">
         <div className="text-left mb-12">
           <h2 className="text-2xl font-bold text-white">Core System Features</h2>
-          <p className="text-slate-400 text-sm mt-1">Engineered for habit formation and automated transaction analysis.</p>
+          <p className="text-stone-400 text-sm mt-1">Engineered for habit formation and automated transaction analysis.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-          <div className="p-6 rounded-lg bg-slate-900 border border-slate-800 space-y-2">
+          <div className="p-6 rounded-xl bg-stone-900 border border-stone-800 space-y-2">
             <h3 className="font-bold text-base text-white">Smart Expense Categorization</h3>
-            <p className="text-slate-400 leading-relaxed">
+            <p className="text-stone-400 leading-relaxed">
               Input entries naturally like "Swiggy 450" or "Uber 250". The system proposes category, amount, and type for confirmation.
             </p>
           </div>
 
-          <div className="p-6 rounded-lg bg-slate-900 border border-slate-800 space-y-2">
+          <div className="p-6 rounded-xl bg-stone-900 border border-stone-800 space-y-2">
             <h3 className="font-bold text-white text-base">Conversational AI Financial Coach</h3>
-            <p className="text-slate-400 leading-relaxed">
+            <p className="text-stone-400 leading-relaxed">
               Query spending trends and receive advice grounded strictly in your verified database metrics with user isolation.
             </p>
           </div>
 
-          <div className="p-6 rounded-lg bg-slate-900 border border-slate-800 space-y-2">
+          <div className="p-6 rounded-xl bg-stone-900 border border-stone-800 space-y-2">
             <h3 className="font-bold text-white text-base">RPG Progression Engine</h3>
-            <p className="text-slate-400 leading-relaxed">
+            <p className="text-stone-400 leading-relaxed">
               Earn XP for logging transactions, building daily activity streaks, completing challenges, and reaching savings milestones.
             </p>
           </div>
 
-          <div className="p-6 rounded-lg bg-slate-900 border border-slate-800 space-y-2">
+          <div className="p-6 rounded-xl bg-stone-900 border border-stone-800 space-y-2">
             <h3 className="font-bold text-white text-base">Machine Learning Analytics</h3>
-            <p className="text-slate-400 leading-relaxed">
+            <p className="text-stone-400 leading-relaxed">
               Ridge Regression spending forecasting and Isolation Forest transaction anomaly detection.
             </p>
           </div>

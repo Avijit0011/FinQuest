@@ -9,13 +9,25 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        cozy: {
+          linen: '#fbf8f3',
+          cream: '#f5efe6',
+          sand: '#e8dfd5',
+          amber: '#f59e0b',
+          copper: '#ea580c',
+          terracotta: '#d97706',
+          espresso: '#161311',
+          mocha: '#221c18',
+          cocoa: '#2c241f',
+          border: '#342a23',
+        },
         brand: {
-          50: '#eef2ff',
-          100: '#e0e7ff',
-          500: '#6366f1',
-          600: '#4f46e5',
-          700: '#4338ca',
-          900: '#312e81',
+          50: '#fef3c7',
+          100: '#fde68a',
+          500: '#f59e0b',
+          600: '#d97706',
+          700: '#b45309',
+          900: '#78350f',
         },
         xp: {
           gold: '#f59e0b',
