@@ -113,9 +113,20 @@ export default function Navbar({
           <Link
             href="/settings"
             title={user ? `${user.name} (${user.email})` : 'Settings'}
-            className="w-8 h-8 rounded bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs flex items-center justify-center border border-slate-700 transition-colors"
+            className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs flex items-center justify-center border border-slate-700 overflow-hidden transition-colors"
           >
-            {initials}
+            {user?.avatar && (user.avatar.startsWith('data:') || user.avatar.startsWith('http') || user.avatar.startsWith('blob:')) ? (
+              <img
+                src={user.avatar}
+                alt={user.name || 'User Profile'}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLElement).style.display = 'none';
+                }}
+              />
+            ) : (
+              initials
+            )}
           </Link>
 
           {isAuthenticated ? (

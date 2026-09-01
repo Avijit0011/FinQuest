@@ -27,6 +27,11 @@ class OnboardingData(BaseModel):
     currency: str = "₹"
     financial_experience: str = "intermediate"
 
+class UserUpdateProfile(BaseModel):
+    name: Optional[str] = None
+    currency: Optional[str] = "₹"
+    avatar: Optional[str] = "avatar_default"
+
 class UserResponse(BaseModel):
     id: int
     name: str

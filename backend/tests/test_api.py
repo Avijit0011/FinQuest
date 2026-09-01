@@ -77,3 +77,27 @@ def test_create_and_delete_goal():
     del_res = client.delete(f"/api/v1/goals/{goal_id}", headers=headers)
     assert del_res.status_code == 204
 
+def test_update_user_profile_avatar():
+    email = "avatar_test_user@finquest.com"
+    client.post("/api/v1/auth/register", json={
+        "name": "Avatar Tester",
+        "email": email,
+        "password": "password123"
+    })
+    login_res = client.post("/api/v1/auth/login", json={"email": email, "password": "password123"})
+    token = login_res.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # Update Profile Avatar
+    new_avatar = "data:image/svg+xml;utf8,<svg><circle cx='50' cy='50' r='40'/></svg>"
+    res = client.put("/api/v1/users/profile", headers=headers, json={
+        "name": "Avatar Tester Updated",
+        "currency": "₹",
+        "avatar": new_avatar
+    })
+    assert res.status_code == 200
+    user_data = res.json()
+    assert user_data["avatar"] == new_avatar
+    assert user_data["name"] == "Avatar Tester Updated"
+
+

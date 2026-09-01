@@ -1,26 +1,40 @@
 import json
 import csv
 import io
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 from backend.database import get_db
 from backend.models.models import User, Transaction, Goal, Budget, UserChallenge, UserAchievement
-from backend.schemas.schemas import UserResponse
+from backend.schemas.schemas import UserResponse, UserUpdateProfile
 from backend.auth.security import get_current_user
 
 router = APIRouter(prefix="/users", tags=["Users & Settings"])
 
 @router.put("/profile", response_model=UserResponse)
 def update_profile(
-    name: str,
-    currency: str = "₹",
-    avatar: str = "avatar_default",
+    profile_data: Optional[UserUpdateProfile] = None,
+    name: Optional[str] = None,
+    currency: Optional[str] = None,
+    avatar: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    current_user.name = name
-    current_user.currency = currency
-    current_user.avatar = avatar
+    if profile_data:
+        if profile_data.name is not None:
+            current_user.name = profile_data.name
+        if profile_data.currency is not None:
+            current_user.currency = profile_data.currency
+        if profile_data.avatar is not None:
+            current_user.avatar = profile_data.avatar
+    else:
+        if name is not None:
+            current_user.name = name
+        if currency is not None:
+            current_user.currency = currency
+        if avatar is not None:
+            current_user.avatar = avatar
+
     db.commit()
     db.refresh(current_user)
     return current_user
