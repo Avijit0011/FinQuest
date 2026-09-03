@@ -124,7 +124,7 @@ export default function LoginPage() {
           <div className="text-center space-y-2">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Cozy Gamified Personal Finance</span>
+              <span>Gamified Personal Finance</span>
             </div>
             <h1 className="text-2xl font-black text-white tracking-tight">
               {mode === 'signin' ? 'Welcome Back to FinQuest' : 'Create Your Quest Account'}

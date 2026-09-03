@@ -41,11 +41,11 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="px-6 pt-16 pb-20 max-w-6xl mx-auto text-center space-y-6">
         <div className="inline-block px-3.5 py-1 rounded-full bg-stone-900 border border-stone-800 text-amber-400 text-xs font-semibold">
-          Cozy Gamified Personal Finance Platform
+          AI-Powered Gamified Personal Finance Platform
         </div>
 
         <h1 className="text-3xl sm:text-5xl font-black text-stone-100 max-w-3xl mx-auto leading-tight tracking-tight">
-          Turn Your Money Habits Into a Cozy Quest.
+          Turn Your Money Habits Into an Empowering Quest.
         </h1>
 
         <p className="text-base text-stone-400 max-w-2xl mx-auto font-normal leading-relaxed">

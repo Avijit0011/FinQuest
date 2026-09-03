@@ -51,16 +51,12 @@ export default function Navbar({
   return (
     <header className="sticky top-0 z-40 w-full border-b border-stone-200 dark:border-stone-800 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md px-4 lg:px-8 py-3">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
-        {/* Brand Logo */}
         <Link href="/dashboard" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center text-white font-black text-lg shadow-md shadow-amber-600/20">
             Q
           </div>
           <span className="font-extrabold text-lg text-stone-900 dark:text-stone-100 tracking-tight">
             FinQuest
-          </span>
-          <span className="text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/60 hidden sm:inline-block">
-            Cozy Finance
           </span>
         </Link>
 
