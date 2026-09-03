@@ -42,26 +42,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const fetchCurrentUser = async (currentToken?: string) => {
     try {
       const activeToken = currentToken || localStorage.getItem('finquest_token');
-      if (!activeToken) return;
-
-      if (activeToken.startsWith('mock_token_')) {
-        const providerMatch = activeToken.split('_')[2] || 'Social';
-        const mockUser: User = {
-          id: 999,
-          name: `${providerMatch.charAt(0).toUpperCase() + providerMatch.slice(1)} Adventurer`,
-          email: `${providerMatch}_user@finquest.com`,
-          avatar: 'avatar_default',
-          level: 1,
-          xp: 100,
-          streak_count: 1,
-          currency: '₹',
-          monthly_income: 60000,
-          monthly_budget_target: 35000,
-          financial_experience: 'beginner',
-          is_admin: false,
-          is_onboarded: true,
-        };
-        setUser(mockUser);
+      if (!activeToken) {
+        setUser(null);
+        setToken(null);
         return;
       }
 
@@ -70,24 +53,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       setUser(userData);
     } catch (err) {
-      console.warn('[AuthContext] Failed to fetch current user profile:', err);
-      // If token exists but server is unreachable, maintain local active session
-      const fallbackUser: User = {
-        id: 1,
-        name: 'Demo Adventurer',
-        email: 'demo@finquest.com',
-        avatar: 'avatar_default',
-        level: 3,
-        xp: 350,
-        streak_count: 5,
-        currency: '₹',
-        monthly_income: 75000,
-        monthly_budget_target: 45000,
-        financial_experience: 'intermediate',
-        is_admin: true,
-        is_onboarded: true,
-      };
-      setUser(fallbackUser);
+      console.warn('[AuthContext] Failed to fetch current user profile, clearing session:', err);
+      localStorage.removeItem('finquest_token');
+      setToken(null);
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -149,26 +118,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await fetchCurrentUser(res.access_token);
       }
     } catch (err) {
-      console.warn('[AuthContext] Server offline or social login API error, activating resilient client session:', err);
-      const mockToken = `mock_token_${provider}_${Date.now()}`;
-      const mockUser: User = {
-        id: 999,
-        name: name || `${provider.charAt(0).toUpperCase() + provider.slice(1)} Adventurer`,
-        email: email || `${provider}_user@finquest.com`,
-        avatar: avatar || 'avatar_default',
-        level: 1,
-        xp: 100,
-        streak_count: 1,
-        currency: '₹',
-        monthly_income: 60000,
-        monthly_budget_target: 35000,
-        financial_experience: 'beginner',
-        is_admin: false,
-        is_onboarded: true,
-      };
-      localStorage.setItem('finquest_token', mockToken);
-      setToken(mockToken);
-      setUser(mockUser);
+      console.warn('[AuthContext] Social login API error:', err);
+      throw err;
     } finally {
       setLoading(false);
     }

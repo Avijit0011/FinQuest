@@ -31,9 +31,9 @@ export default function Navbar({
     }
   }, [darkMode]);
 
-  const level = userLevel ?? (user?.level || 12);
-  const xp = userXP ?? (user?.xp || 2450);
-  const streak = streakCount ?? (user?.streak_count || 14);
+  const level = userLevel ?? (user?.level ?? 1);
+  const xp = userXP ?? (user?.xp ?? 0);
+  const streak = streakCount ?? (user?.streak_count ?? 0);
 
   const xpCurrent = xp % 1000;
   const xpPct = (xpCurrent / 1000) * 100;
@@ -41,7 +41,7 @@ export default function Navbar({
   // Compute initials
   const initials = user?.name
     ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-    : 'AM';
+    : 'FQ';
 
   const handleLogout = () => {
     logout();

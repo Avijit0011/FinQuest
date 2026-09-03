@@ -5,8 +5,11 @@ import Link from 'next/link';
 import HealthScoreGauge from '../../components/HealthScoreGauge';
 import { CardSkeleton } from '../../components/SkeletonLoader';
 import { fetchAPI } from '../../lib/api';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Dashboard() {
+  const { user } = useAuth();
+  const currency = user?.currency || '₹';
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({
     totalBalance: 0,
@@ -45,7 +48,7 @@ export default function Dashboard() {
 
           if (summary.status === 'fulfilled' && summary.value) {
             updated.totalBalance = summary.value.total_income ? summary.value.net_savings : 0;
-            updated.monthlyIncome = summary.value.total_income ?? 0;
+            updated.monthlyIncome = summary.value.total_income || user?.monthly_income || 0;
             updated.monthlyExpense = summary.value.total_expense ?? 0;
             updated.netSavings = summary.value.net_savings ?? 0;
           }
@@ -144,7 +147,7 @@ export default function Dashboard() {
         <div className="fin-card p-4">
           <span className="text-xs font-semibold text-slate-500">Total Net Worth</span>
           <div className="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">
-            ₹{data.totalBalance.toLocaleString()}
+            {currency}{data.totalBalance.toLocaleString()}
           </div>
           <span className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold mt-1 inline-block">
             Net Account Balance
@@ -154,7 +157,7 @@ export default function Dashboard() {
         <div className="fin-card p-4">
           <span className="text-xs font-semibold text-slate-500">Monthly Income</span>
           <div className="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">
-            ₹{data.monthlyIncome.toLocaleString()}
+            {currency}{data.monthlyIncome.toLocaleString()}
           </div>
           <span className="text-[11px] text-slate-400 mt-1 inline-block">Verified Inflow</span>
         </div>
@@ -162,7 +165,7 @@ export default function Dashboard() {
         <div className="fin-card p-4">
           <span className="text-xs font-semibold text-slate-500">Monthly Expenses</span>
           <div className="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1">
-            ₹{data.monthlyExpense.toLocaleString()}
+            {currency}{data.monthlyExpense.toLocaleString()}
           </div>
           <span className="text-[11px] text-slate-400 mt-1 inline-block">Verified Outflow</span>
         </div>
@@ -170,7 +173,7 @@ export default function Dashboard() {
         <div className="fin-card p-4">
           <span className="text-xs font-semibold text-slate-500">Net Savings</span>
           <div className="text-xl font-bold text-blue-600 dark:text-blue-400 mt-1">
-            ₹{data.netSavings.toLocaleString()}
+            {currency}{data.netSavings.toLocaleString()}
           </div>
           <span className="text-[11px] text-slate-400 mt-1 inline-block">Current Period Savings</span>
         </div>
