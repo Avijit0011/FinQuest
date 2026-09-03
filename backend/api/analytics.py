@@ -1,6 +1,6 @@
 import datetime
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
 from backend.database import get_db
 from backend.models.models import User, Transaction, Category, Budget, Goal
@@ -16,7 +16,7 @@ def get_analytics_summary(
 ):
     start_date = datetime.datetime.utcnow() - datetime.timedelta(days=range_days)
 
-    transactions = db.query(Transaction).filter(
+    transactions = db.query(Transaction).options(joinedload(Transaction.category)).filter(
         Transaction.user_id == current_user.id,
         Transaction.date >= start_date
     ).all()
@@ -56,22 +56,22 @@ def get_analytics_summary(
         for day, vals in daily_map.items()
     ]
 
-    # Month over Month comparison
+    # Month over Month comparison with fast SQL scalar sums
     current_month_start = datetime.datetime.utcnow().replace(day=1, hour=0, minute=0, second=0)
     prev_month_start = (current_month_start - datetime.timedelta(days=1)).replace(day=1)
 
-    curr_expenses = sum([t.amount for t in db.query(Transaction).filter(
+    curr_expenses = db.query(func.sum(Transaction.amount)).filter(
         Transaction.user_id == current_user.id,
         Transaction.transaction_type == "expense",
         Transaction.date >= current_month_start
-    ).all()])
+    ).scalar() or 0.0
 
-    prev_expenses = sum([t.amount for t in db.query(Transaction).filter(
+    prev_expenses = db.query(func.sum(Transaction.amount)).filter(
         Transaction.user_id == current_user.id,
         Transaction.transaction_type == "expense",
         Transaction.date >= prev_month_start,
         Transaction.date < current_month_start
-    ).all()])
+    ).scalar() or 0.0
 
     mom_change_pct = ((curr_expenses - prev_expenses) / prev_expenses * 100) if prev_expenses > 0 else 0.0
 
@@ -86,3 +86,4 @@ def get_analytics_summary(
         "previous_month_expense": round(prev_expenses, 2),
         "mom_change_percentage": round(mom_change_pct, 1)
     }
+

@@ -18,6 +18,10 @@ def list_budgets(db: Session = Depends(get_db), current_user: User = Depends(get
     ).all()
     total_spent = sum([t.amount for t in expenses])
 
+    # Pre-fetch category names map for O(1) in-memory lookups
+    all_categories = db.query(Category).all()
+    cat_map = {c.id: c.name for c in all_categories}
+
     result = []
     for b in budgets:
         b_spent = total_spent
@@ -27,8 +31,7 @@ def list_budgets(db: Session = Depends(get_db), current_user: User = Depends(get
         for bc in b.budget_categories:
             bc_spent = sum([t.amount for t in expenses if t.category_id == bc.category_id])
             cat_pct = (bc_spent / bc.allocated_amount * 100) if bc.allocated_amount > 0 else 0.0
-            cat = db.query(Category).filter(Category.id == bc.category_id).first()
-            cat_name = cat.name if cat else "Category"
+            cat_name = cat_map.get(bc.category_id, "Category")
             
             cat_responses.append(BudgetCategoryResponse(
                 id=bc.id,

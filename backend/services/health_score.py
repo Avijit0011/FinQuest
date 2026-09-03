@@ -1,21 +1,19 @@
 import datetime
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from backend.models.models import User, Transaction, Budget, Goal, FinancialHealthScore
 
-def calculate_financial_health_score(db: Session, user: User) -> dict:
+def calculate_financial_health_score(db: Session, user: User, save_to_db: bool = False) -> dict:
     # 1. Savings Score (max 25 pts)
-    # Based on ratio of total savings / income
-    income_txs = db.query(Transaction).filter(
+    total_income = db.query(func.sum(Transaction.amount)).filter(
         Transaction.user_id == user.id,
         Transaction.transaction_type == "income"
-    ).all()
-    expense_txs = db.query(Transaction).filter(
+    ).scalar() or user.monthly_income or 50000.0
+
+    total_expense = db.query(func.sum(Transaction.amount)).filter(
         Transaction.user_id == user.id,
         Transaction.transaction_type == "expense"
-    ).all()
-
-    total_income = sum([t.amount for t in income_txs]) or user.monthly_income or 50000.0
-    total_expense = sum([t.amount for t in expense_txs]) or 0.0
+    ).scalar() or 0.0
 
     net_savings = max(0.0, total_income - total_expense)
     savings_ratio = (net_savings / total_income) if total_income > 0 else 0.0
@@ -36,17 +34,11 @@ def calculate_financial_health_score(db: Session, user: User) -> dict:
     if not budgets:
         budget_score = 15 # Default neutral score
     else:
-        # Check budget adherence
-        within_budget_count = 0
-        total_budgets = len(budgets)
-        for b in budgets:
-            if total_expense <= b.total_amount:
-                within_budget_count += 1
-        adherence_ratio = within_budget_count / total_budgets if total_budgets > 0 else 1.0
+        within_budget_count = sum(1 for b in budgets if total_expense <= b.total_amount)
+        adherence_ratio = within_budget_count / len(budgets)
         budget_score = int(adherence_ratio * 25)
 
     # 3. Consistency Score (max 20 pts)
-    # Based on logging activity & streak count
     streak = user.streak_count or 0
     if streak >= 14:
         consistency_score = 20
@@ -77,7 +69,6 @@ def calculate_financial_health_score(db: Session, user: User) -> dict:
 
     overall_score = min(100, savings_score + budget_score + consistency_score + goal_score + spending_score)
 
-    # Rating description
     if overall_score >= 85:
         rating = "Excellent Financial Quest Mastery"
     elif overall_score >= 70:
@@ -95,19 +86,19 @@ def calculate_financial_health_score(db: Session, user: User) -> dict:
     if streak < 7:
         insights.append("Maintain a 7-day transaction tracking streak to unlock maximum consistency points.")
 
-    # Save or update record in DB
-    score_record = FinancialHealthScore(
-        user_id=user.id,
-        overall_score=overall_score,
-        savings_score=savings_score,
-        budget_score=budget_score,
-        consistency_score=consistency_score,
-        goal_score=goal_score,
-        spending_score=spending_score,
-        calculated_at=datetime.datetime.utcnow()
-    )
-    db.add(score_record)
-    db.commit()
+    if save_to_db:
+        score_record = FinancialHealthScore(
+            user_id=user.id,
+            overall_score=overall_score,
+            savings_score=savings_score,
+            budget_score=budget_score,
+            consistency_score=consistency_score,
+            goal_score=goal_score,
+            spending_score=spending_score,
+            calculated_at=datetime.datetime.utcnow()
+        )
+        db.add(score_record)
+        db.commit()
 
     return {
         "overall_score": overall_score,
@@ -119,3 +110,4 @@ def calculate_financial_health_score(db: Session, user: User) -> dict:
         "rating": rating,
         "insights": insights
     }
+
