@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { useAuth } from '../../context/AuthContext';
 import { Shield, Lock, Mail, User as UserIcon, ArrowRight, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
 
+import GoogleLoginModal from '../../components/GoogleLoginModal';
+
 export default function LoginPage() {
   const router = useRouter();
   const { login, register, socialLogin, isAuthenticated } = useAuth();
@@ -16,6 +18,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
 
   // If already authenticated, redirect to dashboard
   React.useEffect(() => {
@@ -25,6 +28,11 @@ export default function LoginPage() {
   }, [isAuthenticated, router]);
 
   const handleSocialAuth = async (provider: 'google' | 'github' | 'apple') => {
+    if (provider === 'google') {
+      setIsGoogleModalOpen(true);
+      return;
+    }
+
     setError(null);
     setSubmitting(true);
     try {
@@ -337,6 +345,11 @@ export default function LoginPage() {
       <footer className="border-t border-slate-900 py-4 px-6 text-center text-xs text-slate-500">
         <span>© 2026 FinQuest SaaS Platform. All rights reserved.</span>
       </footer>
+
+      <GoogleLoginModal
+        isOpen={isGoogleModalOpen}
+        onClose={() => setIsGoogleModalOpen(false)}
+      />
     </div>
   );
 }
