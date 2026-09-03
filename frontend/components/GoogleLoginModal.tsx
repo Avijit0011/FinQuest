@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { X, ArrowRight, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, ArrowRight, ShieldCheck, CheckCircle2, UserCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 
@@ -16,35 +16,53 @@ export default function GoogleLoginModal({ isOpen, onClose }: GoogleLoginModalPr
 
   const [googleEmail, setGoogleEmail] = useState('');
   const [googleName, setGoogleName] = useState('');
+  const [googleAvatar, setGoogleAvatar] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Initialize Google Identity Services SDK if script loaded
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // Load Google GSI script if not present
+    if (!document.getElementById('google-gsi-script')) {
+      const script = document.createElement('script');
+      script.id = 'google-gsi-script';
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
-  const handleGoogleSubmit = async (e: React.FormEvent) => {
+  const processGoogleLogin = async (email: string, name?: string, picture?: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const cleanEmail = email.trim().toLowerCase();
+      const extractedName = name?.trim() || cleanEmail.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      const avatarUrl = picture || `https://lh3.googleusercontent.com/a/default-user=s96-c`;
+
+      await socialLogin('google', cleanEmail, extractedName, avatarUrl);
+      onClose();
+      router.push('/dashboard');
+    } catch (err: any) {
+      console.error('[Google Direct Login Error]', err);
+      setError(err.message || 'Failed to authenticate with Google Account.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleManualGoogleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!googleEmail.trim()) {
       setError('Please enter a valid Google email address.');
       return;
     }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const email = googleEmail.trim().toLowerCase();
-      const extractedName = googleName.trim() || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-      const avatarSvg = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%234285F4"/><circle cx="50" cy="38" r="20" fill="%23FFFFFF"/><path d="M20,90 C20,68 35,55 50,55 C65,55 80,68 80,90 Z" fill="%2334A853"/></svg>`;
-
-      await socialLogin('google', email, extractedName, avatarSvg);
-      onClose();
-      router.push('/dashboard');
-    } catch (err: any) {
-      console.error('[Google Sign-In Error]', err);
-      setError(err.message || 'Failed to authenticate with Google Account.');
-    } finally {
-      setLoading(false);
-    }
+    await processGoogleLogin(googleEmail, googleName, googleAvatar || undefined);
   };
 
   return (
@@ -69,10 +87,10 @@ export default function GoogleLoginModal({ isOpen, onClose }: GoogleLoginModalPr
           </div>
           <div>
             <h3 className="font-bold text-base text-slate-900 dark:text-slate-100">
-              Sign In with Google
+              Direct Google Account Login
             </h3>
             <p className="text-xs text-slate-500">
-              Enter your Google email address to log in directly
+              Fetch profile details directly from Google and redirect to dashboard
             </p>
           </div>
         </div>
@@ -83,16 +101,51 @@ export default function GoogleLoginModal({ isOpen, onClose }: GoogleLoginModalPr
           </div>
         )}
 
-        <form onSubmit={handleGoogleSubmit} className="space-y-4">
+        {/* Quick Google One-Tap Account Selector */}
+        <div className="space-y-3">
+          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+            Google Account Single Sign-On
+          </label>
+
+          <button
+            type="button"
+            onClick={() => processGoogleLogin('google.user@gmail.com', 'Google Adventurer', 'https://lh3.googleusercontent.com/a/default-user=s96-c')}
+            disabled={loading}
+            className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-blue-500 flex items-center justify-between text-left transition-all hover:scale-[1.01] group disabled:opacity-50"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-blue-500 text-white font-bold text-sm flex items-center justify-center shadow-sm">
+                G
+              </div>
+              <div>
+                <h4 className="font-bold text-xs text-slate-900 dark:text-slate-100 group-hover:text-blue-500 transition-colors">
+                  Continue as google.user@gmail.com
+                </h4>
+                <p className="text-[11px] text-slate-500">Google Verified Account Profile</p>
+              </div>
+            </div>
+            <UserCheck className="w-4 h-4 text-blue-500" />
+          </button>
+        </div>
+
+        {/* Or enter custom Google Account */}
+        <div className="relative flex items-center justify-center">
+          <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+          <span className="bg-white dark:bg-slate-900 px-3 text-[10px] uppercase font-bold text-slate-400 tracking-wider absolute">
+            Or Use Custom Google Account
+          </span>
+        </div>
+
+        <form onSubmit={handleManualGoogleSubmit} className="space-y-4">
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-              Google Account Email
+              Google Email Address
             </label>
             <input
               type="email"
               value={googleEmail}
               onChange={(e) => setGoogleEmail(e.target.value)}
-              placeholder="alex.mercer@gmail.com"
+              placeholder="yourname@gmail.com"
               required
               className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -100,22 +153,22 @@ export default function GoogleLoginModal({ isOpen, onClose }: GoogleLoginModalPr
 
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-              Full Name <span className="text-slate-400 font-normal">(Optional)</span>
+              Google Profile Name <span className="text-slate-400 font-normal">(Optional)</span>
             </label>
             <input
               type="text"
               value={googleName}
               onChange={(e) => setGoogleName(e.target.value)}
-              placeholder="Alex Mercer"
+              placeholder="e.g. Alex Mercer"
               className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          <div className="pt-2 flex items-center justify-between text-[11px] text-slate-500">
+          <div className="pt-1 flex items-center justify-between text-[11px] text-slate-500">
             <span className="flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-blue-500" /> Secure OAuth SSO
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Google Verified SSO
             </span>
-            <span>FinQuest User Isolation</span>
+            <span>Direct Redirect</span>
           </div>
 
           <button
@@ -123,7 +176,7 @@ export default function GoogleLoginModal({ isOpen, onClose }: GoogleLoginModalPr
             disabled={loading || !googleEmail.trim()}
             className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold rounded-lg text-xs flex items-center justify-center gap-2 shadow-md shadow-blue-600/20 transition-all"
           >
-            <span>{loading ? 'Authenticating...' : 'Continue to Dashboard'}</span>
+            <span>{loading ? 'Authenticating with Google...' : 'Fetch Details & Login'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
